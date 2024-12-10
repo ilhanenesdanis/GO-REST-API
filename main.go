@@ -13,7 +13,7 @@ func main() {
 	server.GET("/events", getEvents) //GET, POST,PUT,PATCH,DELETE
 	server.POST("/events", createEvents)
 
-	server.Run(":8080") //localhost:8080
+	server.Run(":8081") //localhost:8081
 }
 
 func getEvents(context *gin.Context) {
@@ -29,11 +29,14 @@ func createEvents(context *gin.Context) {
 	err := context.ShouldBindJSON(&event)
 
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Validating error"})
+
+		context.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 	}
 	event.ID = 1
 	event.UserID = 1
+
+	event.Save()
 
 	context.JSON(http.StatusCreated, gin.H{"message": "event created", "event": event})
 }
